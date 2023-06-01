@@ -1,0 +1,6 @@
+*.exe
+*.lib
+*.dll
+*.suo
+*.vcxproj.user
+.vs/
