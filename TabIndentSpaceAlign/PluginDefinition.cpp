@@ -33,7 +33,7 @@ NppData nppData;
 //
 // Initialize your plugin data here
 // It will be called while plugin loading
-bool enable;
+bool enabled;
 TCHAR iniFilePath[MAX_PATH];
 void pluginInit(HANDLE hModule)
 {
@@ -47,7 +47,8 @@ void pluginInit(HANDLE hModule)
 	PathAppend(iniFilePath, NPP_PLUGIN_NAME);
 	StringCchCat(iniFilePath, MAX_PATH, TEXT(".ini"));
 
-	enable = GetPrivateProfileInt(TEXT("Settings"), TEXT("Enable"), 0, iniFilePath) != 0 ? true : false;
+	enabled = GetPrivateProfileInt(TEXT("Settings"), TEXT("Enable"),
+								   0, iniFilePath) != 0 ? true : false;
 }
 
 //
@@ -55,7 +56,8 @@ void pluginInit(HANDLE hModule)
 //
 void pluginCleanUp()
 {
-	WritePrivateProfileString(TEXT("Settings"), TEXT("Enable"), enable ? TEXT("1") : TEXT("0"), iniFilePath);
+	WritePrivateProfileString(TEXT("Settings"), TEXT("Enable"),
+							  enabled ? TEXT("1") : TEXT("0"), iniFilePath);
 }
 
 //
@@ -65,7 +67,7 @@ ShortcutKey *Tab;
 ShortcutKey *STab;
 void commandMenuInit()
 {
-	setCommand(0, TEXT("Enable"), toggle, NULL, enable);
+	setCommand(0, TEXT("Enable"), toggle, NULL, enabled);
 
 	Tab = new ShortcutKey;
     Tab->_isAlt      = false;
@@ -122,7 +124,7 @@ bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey 
 
 void basicAutoIndent()
 {
-	if(enable)
+	if(enabled)
 	{
 		HWND curScintilla = getCurrentScintilla();
 
@@ -156,14 +158,12 @@ void basicAutoIndent()
 
 void toggle()
 {
-	enable = !enable;
+	enabled = !enabled;
 
-	HWND curScintilla = getCurrentScintilla();
-	HMENU hMenu = GetMenu(nppData._nppHandle);
+	HMENU hMenu = (HMENU) SendMessage (nppData._nppHandle, NPPM_GETMENUHANDLE, 0, 0);
     if (hMenu)
-    {
-        CheckMenuItem(hMenu, funcItem[0]._cmdID, MF_BYCOMMAND | (enable ? MF_CHECKED : MF_UNCHECKED));
-    }
+        CheckMenuItem(hMenu, funcItem[0]._cmdID,
+					  MF_BYCOMMAND | (enabled ? MF_CHECKED : MF_UNCHECKED));
 }
 
 /* Conceptually, each line is divided into three parts: Indentation, alignment, and text.
@@ -179,7 +179,7 @@ void indent()
 	// The latter condition is useful when "TAB to SPACE" is configured for certain languages,
 	// e.g. Python. Pressing TAB has the same effect is such cases, of if the plugin were disabled.
 	//
-	if(enable && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
+	if(enabled && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
@@ -287,7 +287,7 @@ void unindent()
 	// See the comment in indent() for an explanation for the second condition in the
 	// following "if"
 	//
-	if(enable && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
+	if(enabled && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
