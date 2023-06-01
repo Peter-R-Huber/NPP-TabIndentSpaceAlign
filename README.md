@@ -16,11 +16,11 @@ Features
 
 When the TabIndentSpaceAlign plugin is enabled, Notepad++ changes its behavior concerning auto-indent and TAB handling in the following manner:
 
-* When pressing ENTER, the new line gets the same whitespace as the previous line. That means, whatever combination of TAB and SPACE is at the beginning of the previous line, up to the first character that in not TAB or SPACE, is duplicated in the new line.
+* When pressing ENTER, the new line gets the same initial whitespace as the previous line. That means, whatever combination of TAB and SPACE is at the beginning of the previous line, up to the first character that in not TAB or SPACE, is duplicated in the new line.
 
-  Without the plugin, when auto-indent is enabled, the new line also gets indented as the previous line, but the whitespace characters are either all converted to SPACE or TAB (plus maybe some SPACEs if the indentation goes in between tab positions).
+  Without the plugin, when auto-indent is enabled, the new line also gets indented as the previous line, but the whitespace characters are either all converted to SPACE or to TAB (plus maybe some SPACES if the indentation goes in between tab positions).
 
-* When pressing TAB before any non-TAB character in a line, then a TAB character is inserted. After the first non-TAB character in a line, a number of SPACES are inserted to fill up to the next tab position.
+* When pressing TAB before any non-TAB character in a line, then a TAB character is inserted. After the first non-TAB character in a line, a number of SPACES is inserted to fill up to the next tab position.
 
 
 Improvements
@@ -32,7 +32,7 @@ In addition to making the source code 64-bit compatible, I changed a few other t
 
 * If "TAB to SPACE" is configured in Notepad++ (globally or for the current language), pressing the TAB key has the same effect as if the plugin were disabled. In the original version the "TAB to SPACE" setting was ignored.
 
-  That change useful when we want TAB for indention in general, but not for specific languages, e.g. Python.
+  That change is useful when we want TAB for indention in general, but not for specific languages, e.g. Python.
 
 
 Issues
@@ -40,7 +40,7 @@ Issues
 
 A lot (-:
 
-The current version does not differ much from the original version yet. But maybe improvements are possible now, that were not possible in 2012, when the original was implemented. The API for the communication between plugins and Notepad++ and the underlying Scintilla library have been extended since then.
+My version does not differ much from the original version yet. But maybe improvements are possible now, that were not possible in 2012, when the original was implemented. The API for the communication between plugins and Notepad++ and the underlying Scintilla library have been extended since then.
 
 
 Installation
