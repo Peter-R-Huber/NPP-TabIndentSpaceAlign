@@ -131,7 +131,6 @@ void basicAutoIndent()
 		auto position    = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
 		auto line_number = SendMessage(curScintilla, SCI_LINEFROMPOSITION, position, 0);
 		auto line_start  = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
-		auto line_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
 
 		auto prevline = line_number - 1;
 		auto prevline_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, prevline, 0);
@@ -143,16 +142,11 @@ void basicAutoIndent()
 		SendMessage(curScintilla, SCI_SETSEL, prevline_start, prevline_indent);
 		SendMessage(curScintilla, SCI_GETSELTEXT, 0, (LPARAM)&indent1);
 
-		char indent2[9999];
-		SendMessage(curScintilla, SCI_SETSEL, line_start, line_indent);
-		SendMessage(curScintilla, SCI_GETSELTEXT, 0, (LPARAM)&indent2);
-
 		/* Combine the parts and duplicate them on both lines. */
 		SendMessage(curScintilla, SCI_INSERTTEXT, line_start, (LPARAM)&indent1);
-		SendMessage(curScintilla, SCI_INSERTTEXT, prevline_indent, (LPARAM)&indent2);
 
 		/* Place cursor at end of indentation. */
-		auto new_position = line_start + (prevline_indent - prevline_start) + (line_indent - line_start);
+		auto new_position = line_start + (prevline_indent - prevline_start);
 		SendMessage(curScintilla, SCI_SETSEL, new_position, new_position);
 
 		SendMessage(curScintilla, SCI_ENDUNDOACTION, 0, 0);
