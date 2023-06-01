@@ -173,8 +173,13 @@ void indent()
 {
 	HWND curScintilla = getCurrentScintilla();
 
-	/* Override indent behavior only if we're using hard tabs. */
-	if(enable)
+	// Override indent behavior only if the plugin is enabled and TAB characters shall not be
+	// replaced by spaces.
+	//
+	// The latter condition is useful when "TAB to SPACE" is configured for certain languages,
+	// e.g. Python. Pressing TAB has the same effect is such cases, of if the plugin were disabled.
+	//
+	if(enable && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
@@ -279,8 +284,10 @@ void unindent()
 {
 	HWND curScintilla = getCurrentScintilla();
 
-	/* Override unindent behavior only if we're using hard tabs. */
-	if(enable)
+	// See the comment in indent() for an explanation for the second condition in the
+	// following "if"
+	//
+	if(enable && SendMessage(curScintilla, SCI_GETUSETABS, 0, 0) != 0)
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
