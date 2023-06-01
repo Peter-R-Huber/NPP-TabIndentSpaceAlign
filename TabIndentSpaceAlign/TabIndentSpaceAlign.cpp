@@ -21,8 +21,8 @@ extern FuncItem funcItem[nbFunc];
 extern NppData nppData;
 
 
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  reasonForCall, 
+BOOL APIENTRY DllMain( HANDLE hModule,
+                       DWORD  reasonForCall,
                        LPVOID lpReserved )
 {
     switch (reasonForCall)
@@ -67,7 +67,7 @@ extern "C" __declspec(dllexport) FuncItem * getFuncsArray(int *nbF)
 int fire_enter;
 extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 {
-	switch (notifyCode->nmhdr.code) 
+	switch (notifyCode->nmhdr.code)
 	{
         case SCN_CHARADDED:
 		{
@@ -89,7 +89,7 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 }
 
 
-// Here you can process the Npp Messages 
+// Here you can process the Npp Messages
 // I will make the messages accessible little by little, according to the need of plugin development.
 // Please let me know if you need to access to some messages :
 // http://sourceforge.net/forum/forum.php?forum_id=482781

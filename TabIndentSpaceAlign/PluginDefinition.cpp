@@ -16,9 +16,9 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <shlwapi.h>
-#include <strsafe.h>
 #include "PluginDefinition.h"
 #include "menuCmdID.h"
+#include <strsafe.h>
 
 //
 // The plugin data that Notepad++ needs
@@ -32,7 +32,7 @@ NppData nppData;
 
 //
 // Initialize your plugin data here
-// It will be called while plugin loading   
+// It will be called while plugin loading
 bool enable;
 TCHAR iniFilePath[MAX_PATH];
 void pluginInit(HANDLE hModule)
@@ -46,7 +46,7 @@ void pluginInit(HANDLE hModule)
 
 	PathAppend(iniFilePath, NPP_PLUGIN_NAME);
 	StringCchCat(iniFilePath, MAX_PATH, TEXT(".ini"));
-	
+
 	enable = GetPrivateProfileInt(TEXT("Settings"), TEXT("Enable"), 0, iniFilePath) != 0 ? true : false;
 }
 
@@ -75,10 +75,10 @@ void commandMenuInit()
 	setCommand(1, TEXT("Indent"), indent, Tab);
 
     STab = new ShortcutKey;
-    STab->_isAlt      = false;
-    STab->_isCtrl     = false;
-    STab->_isShift    = true;
-    STab->_key        = VK_TAB;
+    STab->_isAlt     = false;
+    STab->_isCtrl    = false;
+    STab->_isShift   = true;
+    STab->_key       = VK_TAB;
     setCommand(2, TEXT("Unindent"), unindent, STab);
 }
 
@@ -96,7 +96,7 @@ void commandMenuCleanUp()
 //
 // This function help you to initialize your plugin commands
 //
-bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk, bool check0nInit) 
+bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk, bool check0nInit)
 {
     if (index >= nbFunc)
 	{
@@ -128,19 +128,14 @@ void basicAutoIndent()
 
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
-		int position    = ::SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
-		int line_number = ::SendMessage(curScintilla, SCI_LINEFROMPOSITION, position, 0);
-		int line_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
-		int line_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
+		auto position    = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
+		auto line_number = SendMessage(curScintilla, SCI_LINEFROMPOSITION, position, 0);
+		auto line_start  = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
+		auto line_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
 
-		/* Delete beginning whitespace on the new line. */
-		//int line_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
-		//SendMessage(curScintilla, SCI_SETSEL, line_start, line_indent);
-		//SendMessage(curScintilla, SCI_REPLACESEL, 0, (LPARAM)&"");
-
-		int prevline = line_number - 1;
-		int prevline_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, prevline, 0);
-		int prevline_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, prevline, 0);
+		auto prevline = line_number - 1;
+		auto prevline_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, prevline, 0);
+		auto prevline_indent = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, prevline, 0);
 
 		/* The indentation is split into two parts, copy both parts.
 		   Note that either part may be empty. */
@@ -157,12 +152,13 @@ void basicAutoIndent()
 		SendMessage(curScintilla, SCI_INSERTTEXT, prevline_indent, (LPARAM)&indent2);
 
 		/* Place cursor at end of indentation. */
-		int new_position = line_start + (prevline_indent - prevline_start) + (line_indent - line_start);
+		auto new_position = line_start + (prevline_indent - prevline_start) + (line_indent - line_start);
 		SendMessage(curScintilla, SCI_SETSEL, new_position, new_position);
 
 		SendMessage(curScintilla, SCI_ENDUNDOACTION, 0, 0);
 	}
 }
+
 
 void toggle()
 {
@@ -188,26 +184,26 @@ void indent()
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
-		int start = SendMessage(curScintilla, SCI_GETSELECTIONSTART, 0, 0);
-		int end   = SendMessage(curScintilla, SCI_GETSELECTIONEND, 0, 0);
-		
+		auto start = SendMessage(curScintilla, SCI_GETSELECTIONSTART, 0, 0);
+		auto end   = SendMessage(curScintilla, SCI_GETSELECTIONEND, 0, 0);
+
 		/* If we have a selection, the last character is not included. */
 		if(start < end)
 		{
 			end--;
 		}
 
-		int start_line = SendMessage(curScintilla, SCI_LINEFROMPOSITION, start, 0);
-		int end_line   = SendMessage(curScintilla, SCI_LINEFROMPOSITION, end, 0);
+		auto start_line = SendMessage(curScintilla, SCI_LINEFROMPOSITION, start, 0);
+		auto end_line   = SendMessage(curScintilla, SCI_LINEFROMPOSITION, end, 0);
 
 		if(start_line < end_line)
 		{
-			int position = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
-			int anchor   = SendMessage(curScintilla, SCI_GETANCHOR, 0, 0);
+			auto position = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
+			auto anchor   = SendMessage(curScintilla, SCI_GETANCHOR, 0, 0);
 
-			for(int line_number = start_line; line_number <= end_line; line_number++)
+			for(auto line_number = start_line; line_number <= end_line; line_number++)
 			{
-				int line_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
+				auto line_start = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
 
 				/* Insert tab. */
 				SendMessage(curScintilla, SCI_INSERTTEXT, line_start, (LPARAM)&"\t");
@@ -229,12 +225,12 @@ void indent()
 		{
 			char line[9999];
 
-			int line_start     = SendMessage(curScintilla, SCI_POSITIONFROMLINE, start_line, 0);
-			int line_alignment = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, start_line, 0);
+			auto line_start     = SendMessage(curScintilla, SCI_POSITIONFROMLINE, start_line, 0);
+			auto line_alignment = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, start_line, 0);
 			SendMessage(curScintilla, SCI_GETLINE, start_line, (LPARAM)&line);
 
 			/* Find the position where indent ends and alignment begins. */
-			int line_indent = line_alignment - line_start;
+			auto line_indent = line_alignment - line_start;
 			char space = ' ';
 			while(line_indent > 0 && line[line_indent-1] == space)
 			{
@@ -252,17 +248,17 @@ void indent()
 			}
 			else
 			{
-				int tabWidth = SendMessage(curScintilla, SCI_GETTABWIDTH, 0, 0);
+				auto tabWidth = SendMessage(curScintilla, SCI_GETTABWIDTH, 0, 0);
 
-				int numSpaces;
+				decltype(tabWidth) numSpaces;
 				if(start <= line_alignment)
 				{
-					int col = SendMessage(curScintilla, SCI_GETCOLUMN, line_alignment, 0);
+					auto col = SendMessage(curScintilla, SCI_GETCOLUMN, line_alignment, 0);
 					numSpaces = tabWidth - (col % tabWidth);
 				}
 				else
 				{
-					int col = SendMessage(curScintilla, SCI_GETCOLUMN, start, 0);
+					auto col = SendMessage(curScintilla, SCI_GETCOLUMN, start, 0);
 					numSpaces = tabWidth - (col % tabWidth);
 				}
 
@@ -294,37 +290,37 @@ void unindent()
 	{
 		SendMessage(curScintilla, SCI_BEGINUNDOACTION, 0, 0);
 
-		int position = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
-		int anchor   = SendMessage(curScintilla, SCI_GETANCHOR, 0, 0);
+		auto position = SendMessage(curScintilla, SCI_GETCURRENTPOS, 0, 0);
+		auto anchor   = SendMessage(curScintilla, SCI_GETANCHOR, 0, 0);
 
-		int start = SendMessage(curScintilla, SCI_GETSELECTIONSTART, 0, 0);
-		int end   = SendMessage(curScintilla, SCI_GETSELECTIONEND, 0, 0);
-		
+		auto start = SendMessage(curScintilla, SCI_GETSELECTIONSTART, 0, 0);
+		auto end   = SendMessage(curScintilla, SCI_GETSELECTIONEND, 0, 0);
+
 		/* If we have a selection, the last character is not included. */
 		if(start < end)
 		{
 			end--;
 		}
 
-		int start_line = SendMessage(curScintilla, SCI_LINEFROMPOSITION, start, 0);
-		int end_line   = SendMessage(curScintilla, SCI_LINEFROMPOSITION, end, 0);
+		auto start_line = SendMessage(curScintilla, SCI_LINEFROMPOSITION, start, 0);
+		auto end_line   = SendMessage(curScintilla, SCI_LINEFROMPOSITION, end, 0);
 
 		bool multiline = start_line < end_line;
 
-		for(int line_number = start_line; line_number <= end_line; line_number++)
+		for(auto line_number = start_line; line_number <= end_line; line_number++)
 		{
 			char line[9999];
 
 			/* line_start <= line_indent <= line_alignment <= line_end */
-			int line_start     = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
-			int line_alignment = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
-			int line_end       = SendMessage(curScintilla, SCI_GETLINEENDPOSITION, line_number, 0);
+			auto line_start     = SendMessage(curScintilla, SCI_POSITIONFROMLINE, line_number, 0);
+			auto line_alignment = SendMessage(curScintilla, SCI_GETLINEINDENTPOSITION, line_number, 0);
+			auto line_end       = SendMessage(curScintilla, SCI_GETLINEENDPOSITION, line_number, 0);
 			SendMessage(curScintilla, SCI_GETLINE, line_number, (LPARAM)&line);
 
 			/* Find the position where indent ends and alignment begins. */
-			int line_indent = line_alignment - line_start;
+			auto line_indent = line_alignment - line_start;
 			char space = ' ';
-					
+
 			while(line_indent > 0 && line[line_indent-1] == space)
 			{
 				line_indent--;

@@ -4,3 +4,4 @@
 *.suo
 *.vcxproj.user
 .vs/
+result/
